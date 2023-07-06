@@ -1,2 +1,2 @@
 # Proyecto_U
- En este proyecto hemos actualizado todo llo que se ha venido trabajando en clase
+ En este proyecto se ha hecho todo lo de la clase correspondiente a desarrollo de videojuegos nivel basico
