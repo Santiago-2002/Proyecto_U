@@ -36,10 +36,17 @@ public class PersonajeController : MonoBehaviour
 
         if(Input.GetKey("right")){
               gameObject.transform.Translate(velocidad*Time.deltaTime, 0, 0);
+              gameObject.GetComponent<Animator>().SetBool("running", true);
         }
         else if (Input.GetKey("left") && gameObject.transform.position.x > limiteL){
               gameObject.transform.Translate(-velocidad*Time.deltaTime, 0, 0);
+              gameObject.GetComponent<Animator>().SetBool("running", true);
         } 
+
+        if( !(Input.GetKey("right") || Input.GetKey("left")) ){
+            gameObject.GetComponent<Animator>().SetBool("running", false);
+
+        }
 
         if(Input.GetKeyDown("space") && Piso){
             Debug.Log("UP - Piso: " + Piso);

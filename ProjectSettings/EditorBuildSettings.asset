@@ -12,9 +12,6 @@ EditorBuildSettings:
     path: Assets/Scenes/Escena2.unity
     guid: 255bb7c0a5a1b194385e02558a0bc108
   - enabled: 1
-    path: Assets/Scenes/Menu Principal.unity
-    guid: 674b21679d7d9614bba57e4344666736
-  - enabled: 1
     path: Assets/Scenes/Splash.unity
     guid: bea4f08f809ecbf47b0c4464201b8c05
   - enabled: 1
@@ -29,4 +26,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Nueva Partida.unity
     guid: 05c516a51c58f05418dd538f3668c467
+  - enabled: 1
+    path: Assets/Scenes/MenuPrincipal.unity
+    guid: b67b37da7ee7ed441a623d73a84b9a72
+  - enabled: 1
+    path: Assets/Scenes/InformacionDesarrollador.unity
+    guid: f6c1f72d489dc9f4d8b9481b0346478c
   m_configObjects: {}
