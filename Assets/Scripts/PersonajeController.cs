@@ -10,11 +10,15 @@ public class PersonajeController : MonoBehaviour
      //float NivelPiso = -0.1f; 
      float Niveltecho = 2.99f;
      //float limiteR = 11.58f;
-     float limiteL = -11.56f;
+     //float limiteL = -11.56f;
      float velocidad = 5f;
-     float Alturasalto = 1.5f;
+     //float Alturasalto = 1.5f;
      float fuerzasalto = 30;
      bool Piso = true;
+
+     private Rigidbody2D rb2d;
+     private Animator animator;
+     private SpriteRenderer spriteR;
      
      [SerializeField] private AudioSource Salto_SFX;
     // Start is called before the first frame update // Personaje iniciara en posicion X -8.57 Y 2.2
@@ -23,6 +27,9 @@ public class PersonajeController : MonoBehaviour
         gameObject.transform.position = new Vector3(-7.56f, Niveltecho,0);
         Debug.Log("INT");
         Debug.Log("VIDAS");
+        rb2d = GetComponent<Rigidbody2D>();
+        animator = gameObject.GetComponent<Animator>();
+        spriteR = GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame
@@ -36,24 +43,30 @@ public class PersonajeController : MonoBehaviour
 
         if(Input.GetKey("right")){
               gameObject.transform.Translate(velocidad*Time.deltaTime, 0, 0);
-              gameObject.GetComponent<Animator>().SetBool("running", true);
+              animator.SetBool("Running", true);
+              spriteR.flipX=false;
         }
-        else if (Input.GetKey("left") && gameObject.transform.position.x > limiteL){
+        else if (Input.GetKey("left")){
               gameObject.transform.Translate(-velocidad*Time.deltaTime, 0, 0);
-              gameObject.GetComponent<Animator>().SetBool("running", true);
+              animator.SetBool("Running", true);
+              spriteR.flipX=true;
         } 
 
         if( !(Input.GetKey("right") || Input.GetKey("left")) ){
-            gameObject.GetComponent<Animator>().SetBool("running", false);
+            animator.SetBool("Running", false);
 
         }
 
-        if(Input.GetKeyDown("space") && Piso){
+        if (Input.GetKeyDown(KeyCode.Space) && Piso)
+        {
             Debug.Log("UP - Piso: " + Piso);
-            gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(0, -fuerzasalto*Physics2D.gravity[1]*gameObject.GetComponent<Rigidbody2D>().mass));
+            rb2d.AddForce(new Vector2(0, -fuerzasalto*Physics2D.gravity[1]*rb2d.mass));
             Salto_SFX.Play();
             Piso = false;
+            animator.SetBool("Suelo", true);
         }
+
+      
 
         
     }
@@ -62,10 +75,12 @@ public class PersonajeController : MonoBehaviour
         if(collision.transform.tag == "Ground"){
             Piso = true;
             Debug.Log("GROUND COLLISION");
+            animator.SetBool("Suelo", false);
         }
         else if(collision.transform.tag == "Obstaculo"){
             Piso = true;
             Debug.Log("OBSTACLE COLLISION");
+            animator.SetBool("Suelo", false);
         }
     }
 
