@@ -9,12 +9,11 @@ public class PersonajeController : MonoBehaviour
 
      //float NivelPiso = -0.1f; 
      float Niveltecho = 2.99f;
-     //float limiteR = 11.58f;
-     //float limiteL = -11.56f;
      float velocidad = 5f;
-     //float Alturasalto = 1.5f;
+     float fuerzaImpulso = 20000;
      float fuerzasalto = 30;
      bool Piso = true;
+     bool hasJump = false;
 
      private Rigidbody2D rb2d;
      private Animator animator;
@@ -57,13 +56,46 @@ public class PersonajeController : MonoBehaviour
 
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) && Piso)
+        // ** Detector de movimiento descendente **
+        //    Sirve para cambiar la animación del personaje y como
+        //    límite para realizar un segundo salto
+        if(rb2d.velocity.y < -0.1){
+            hasJump = false;
+            animator.SetBool("Falling", true);
+            animator.SetBool("Jump", false);
+            animator.SetBool("DoubleJump", false);
+        }
+
+        /*if (Input.GetKeyDown(KeyCode.Space) && Piso)
         {
             Debug.Log("UP - Piso: " + Piso);
             rb2d.AddForce(new Vector2(0, -fuerzasalto*Physics2D.gravity[1]*rb2d.mass));
             Salto_SFX.Play();
             Piso = false;
-            animator.SetBool("Suelo", true);
+            animator.SetBool("Jump", true);
+        }*/
+
+        if((Input.GetKeyDown("space") && Piso)||(Input.GetKeyDown("space") && hasJump)){
+            Debug.Log("UP - Piso: " + Piso);
+            if(hasJump){
+                // Esto se ejecuta cuando YA HA SALTADO por primera vez
+                animator.SetBool("DoubleJump", true);
+                hasJump  = false;
+                float d_i = 1;
+                if(rb2d.velocity.x < 0) d_i = -1; // ¿El personaje va para la derecha o la izquierda?
+                //fuerza vertical y horizontal - como el personaje está en el aire es necesario imprimirle también fuerza horizontal
+                rb2d.AddForce(new Vector2(d_i*fuerzaImpulso, -0.5f*fuerzasalto*Physics2D.gravity[1]*rb2d.mass));
+            }
+            else{
+                // Esto se ejecuta cuando es el PRIMER SALTO
+                Salto_SFX.Play();
+                hasJump  = true;
+                animator.SetBool("Jump", true);
+                animator.SetBool("DoubleJump", false);
+                //fuerza vertical - el desplazamiento horizontal lo da la inercia que lleve el personaje
+                rb2d.AddForce(new Vector2(0, -fuerzasalto*Physics2D.gravity[1]*rb2d.mass));
+            }
+            Piso = false;
         }
 
       
@@ -75,12 +107,15 @@ public class PersonajeController : MonoBehaviour
         if(collision.transform.tag == "Ground"){
             Piso = true;
             Debug.Log("GROUND COLLISION");
-            animator.SetBool("Suelo", false);
+            animator.SetBool("Jump", false);
+            animator.SetBool("Falling", false);
+            
         }
         else if(collision.transform.tag == "Obstaculo"){
             Piso = true;
             Debug.Log("OBSTACLE COLLISION");
-            animator.SetBool("Suelo", false);
+            animator.SetBool("Jump", false);
+            animator.SetBool("Falling", false);
         }
     }
 
