@@ -15,11 +15,18 @@ public class PersonajeController : MonoBehaviour
      bool Piso = true;
      bool hasJump = false;
 
+    bool enElMuroL  = false; // Bandera que verifica que el personaje ha tocado el muro izquierdo
+    bool enElMuroR  = false; // Bandera que verifica que el personaje ha tocado el muro derecho
+
+
      private Rigidbody2D rb2d;
      private Animator animator;
      private SpriteRenderer spriteR;
+     private RaycastHit2D HitL, HitR;
      
      [SerializeField] private AudioSource Salto_SFX;
+     [SerializeField] private LayerMask rayMask;
+
     // Start is called before the first frame update // Personaje iniciara en posicion X -8.57 Y 2.2
     void Start()
     {
@@ -29,11 +36,17 @@ public class PersonajeController : MonoBehaviour
         rb2d = GetComponent<Rigidbody2D>();
         animator = gameObject.GetComponent<Animator>();
         spriteR = GetComponent<SpriteRenderer>();
+
+        
     }
 
     // Update is called once per frame
     void Update()
     {
+
+        HitR = Physics2D.Raycast(transform.position, transform.right, 0.35f, rayMask);
+        HitL = Physics2D.Raycast(transform.position, transform.right, -0.35f, rayMask);
+
         if(gameObject.transform.rotation.z > 0.3 || gameObject.transform.rotation.z < -0.3){
             Debug.Log("ROTATION: " + gameObject.transform.rotation.z);
             gameObject.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
@@ -98,6 +111,46 @@ public class PersonajeController : MonoBehaviour
             Piso = false;
         }
 
+
+        // Implementación del salto del muro
+        if(Input.GetKeyDown("space") && (enElMuroL || enElMuroR)){
+            Debug.Log("WALL JUMP");
+            animator.SetBool("Jump", true);
+            if(enElMuroL){
+                rb2d.AddForce(new Vector2(fuerzaImpulso, -0.5f*fuerzasalto*Physics2D.gravity[1]*rb2d.mass));
+                enElMuroL = false;
+            }
+            else{
+                rb2d.AddForce(new Vector2(-fuerzaImpulso, -0.5f*fuerzasalto*Physics2D.gravity[1]*rb2d.mass));
+                enElMuroR = false;
+            }            
+        }
+
+        // Personaje tocando un muro
+        if(HitL.collider != null){ // izquierdo
+            Debug.Log("WALL LEFT");
+            rb2d.gravityScale = 0.1f;
+            animator.SetBool("Jump", true);
+            enElMuroL = true;
+            Piso = false;
+        }
+        else if(HitR.collider != null){ //derecho
+            Debug.Log("WALL RIGHT");
+            rb2d.gravityScale = 0.1f;
+            animator.SetBool("Jump", true);
+            enElMuroR = true;
+            Piso = false;
+        }
+
+         // Personaje en el aire
+        if((HitL.collider == null) && (HitR.collider == null) && !Piso){
+            Debug.Log("AIRE");
+            animator.SetBool("Jump", false);
+            enElMuroL = false;
+            enElMuroR = false;
+            rb2d.gravityScale = 1f;
+        }
+
       
 
         
@@ -120,6 +173,12 @@ public class PersonajeController : MonoBehaviour
     }
 
      private void OnTriggerEnter2D(Collider2D collision){
+        /*if(collider.tag == "Trap"){
+           Debug.Log("Trampa");
+        }
+        else if(collider.tag == "FallDetector"){
+
+        }*/
         Debug.Log("Caida");
         Vidas -= 1;
         Debug.Log("VIDAS: " + Vidas);
