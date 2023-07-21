@@ -12,7 +12,7 @@ public class PersonajeController : MonoBehaviour
      float velocidad = 5f;
      float fuerzaImpulso = 20000;
      float fuerzasalto = 30;
-     bool Piso = true;
+     bool Piso = false;
      bool hasJump = false;
 
     bool enElMuroL  = false; // Bandera que verifica que el personaje ha tocado el muro izquierdo
@@ -44,13 +44,16 @@ public class PersonajeController : MonoBehaviour
     void Update()
     {
 
-        HitR = Physics2D.Raycast(transform.position, transform.right, 0.35f, rayMask);
-        HitL = Physics2D.Raycast(transform.position, transform.right, -0.35f, rayMask);
+        Debug.DrawRay(transform.position, 0.7f*transform.right, Color.red);
+        Debug.DrawRay(transform.position, -0.7f*transform.right, Color.red);
 
-        if(gameObject.transform.rotation.z > 0.3 || gameObject.transform.rotation.z < -0.3){
+        HitR = Physics2D.Raycast(transform.position, transform.right, 0.7f, rayMask);
+        HitL = Physics2D.Raycast(transform.position, transform.right, -0.7f, rayMask);
+
+        /*if(gameObject.transform.rotation.z > 0.3 || gameObject.transform.rotation.z < -0.3){
             Debug.Log("ROTATION: " + gameObject.transform.rotation.z);
             gameObject.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
-        }
+        }*/
 
 
         if(Input.GetKey("right")){
@@ -130,14 +133,14 @@ public class PersonajeController : MonoBehaviour
         if(HitL.collider != null){ // izquierdo
             Debug.Log("WALL LEFT");
             rb2d.gravityScale = 0.1f;
-            animator.SetBool("Jump", true);
+            animator.SetBool("Wall", true);
             enElMuroL = true;
             Piso = false;
         }
         else if(HitR.collider != null){ //derecho
             Debug.Log("WALL RIGHT");
             rb2d.gravityScale = 0.1f;
-            animator.SetBool("Jump", true);
+            animator.SetBool("Wall", true);
             enElMuroR = true;
             Piso = false;
         }
@@ -145,7 +148,7 @@ public class PersonajeController : MonoBehaviour
          // Personaje en el aire
         if((HitL.collider == null) && (HitR.collider == null) && !Piso){
             Debug.Log("AIRE");
-            animator.SetBool("Jump", false);
+            animator.SetBool("Wall", false);
             enElMuroL = false;
             enElMuroR = false;
             rb2d.gravityScale = 1f;
