@@ -7733,7 +7733,7 @@ GameObject:
   - component: {fileID: 232588069}
   - component: {fileID: 232588068}
   - component: {fileID: 232588067}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Plataformas
   m_TagString: Ground
   m_Icon: {fileID: 0}
@@ -9743,8 +9743,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 560215424}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.46, y: 0.5546, z: 0}
-  m_LocalScale: {x: 1, y: 7.1305513, z: 1}
+  m_LocalPosition: {x: -1.46, y: 1.1685, z: 0}
+  m_LocalScale: {x: 1, y: 5.9026704, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -9994,7 +9994,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: 0.040039748}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -10005,7 +10005,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1, y: 0.9199205}
   m_EdgeRadius: 0
 --- !u!1001 &1678111444
 PrefabInstance:
@@ -10463,6 +10463,10 @@ PrefabInstance:
       propertyPath: m_Size.y
       value: 1.8
       objectReference: {fileID: 0}
+    - target: {fileID: 1472763600619016946, guid: e33f64fc7a8b6ad4a93a3271b8ba2a9d, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3593002414489018472, guid: e33f64fc7a8b6ad4a93a3271b8ba2a9d, type: 3}
       propertyPath: m_FlipX
       value: 0
@@ -10477,7 +10481,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4859162235925215287, guid: e33f64fc7a8b6ad4a93a3271b8ba2a9d, type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8259638320540736197, guid: e33f64fc7a8b6ad4a93a3271b8ba2a9d, type: 3}
       propertyPath: m_RootOrder

@@ -13,10 +13,11 @@ public class PersonajeController : MonoBehaviour
      float fuerzaImpulso = 20000;
      float fuerzasalto = 30;
      bool Piso = false;
-     bool hasJump = false;
-
+     
+     public bool touchFloor = false;
     bool enElMuroL  = false; // Bandera que verifica que el personaje ha tocado el muro izquierdo
     bool enElMuroR  = false; // Bandera que verifica que el personaje ha tocado el muro derecho
+    bool hasJump = false;   
 
 
      private Rigidbody2D rb2d;
@@ -49,6 +50,24 @@ public class PersonajeController : MonoBehaviour
 
         HitR = Physics2D.Raycast(transform.position, transform.right, 0.7f, rayMask);
         HitL = Physics2D.Raycast(transform.position, transform.right, -0.7f, rayMask);
+
+       // Lanza un rayo hacia abajo desde la posición del jugador.
+        Ray ray = new Ray(transform.position, Vector3.down);
+        RaycastHit hit;
+
+        // Comprueba si el rayo colisiona con un objeto a una distancia máxima definida.
+        //int Terreno = LayerMask.GetMask("Terreno");
+        if (Physics.Raycast(ray, out hit, 1.0f))
+        {
+            // Verifica si la colisión es con el objeto del piso (puedes ajustar esto según el nombre de tu piso).
+            Debug.Log("Entro");
+            if (hit.collider.CompareTag("Ground"))
+            {
+               touchFloor = true;
+             }else {
+            touchFloor = false;
+        }
+        }
 
         /*if(gameObject.transform.rotation.z > 0.3 || gameObject.transform.rotation.z < -0.3){
             Debug.Log("ROTATION: " + gameObject.transform.rotation.z);
@@ -130,19 +149,26 @@ public class PersonajeController : MonoBehaviour
         }
 
         // Personaje tocando un muro
-        if(HitL.collider != null){ // izquierdo
+        if(HitL.collider != null && touchFloor == false){ // izquierdo
             Debug.Log("WALL LEFT");
             rb2d.gravityScale = 0.1f;
             animator.SetBool("Wall", true);
             enElMuroL = true;
             Piso = false;
         }
-        else if(HitR.collider != null){ //derecho
+        else if(HitR.collider != null && touchFloor == false){ //derecho
             Debug.Log("WALL RIGHT");
             rb2d.gravityScale = 0.1f;
             animator.SetBool("Wall", true);
             enElMuroR = true;
             Piso = false;
+        }
+        if(touchFloor == true){
+            Piso = true;
+            Debug.Log("GROUND COLLISION");
+            animator.SetBool("Jump", false);
+            animator.SetBool("Falling", false);
+            
         }
 
          // Personaje en el aire
@@ -155,25 +181,42 @@ public class PersonajeController : MonoBehaviour
         }
 
       
-
+      
         
     }
 
     private void OnCollisionEnter2D(Collision2D collision){
-        if(collision.transform.tag == "Ground"){
-            Piso = true;
-            Debug.Log("GROUND COLLISION");
-            animator.SetBool("Jump", false);
-            animator.SetBool("Falling", false);
-            
-        }
-        else if(collision.transform.tag == "Obstaculo"){
+        
+         if(collision.transform.tag == "Obstaculo"){
             Piso = true;
             Debug.Log("OBSTACLE COLLISION");
             animator.SetBool("Jump", false);
             animator.SetBool("Falling", false);
         }
     }
+
+    void OnCollisionStay2D(Collision2D collision)
+{
+    if (collision.gameObject.CompareTag("Ground"))
+    {
+        touchFloor = true;
+        // El jugador está tocando constantemente el piso.
+        // Realiza acciones aquí que necesiten actualizarse continuamente mientras está en el piso.
+    }
+}
+void OnCollisionExit2D(Collision2D collision)
+{
+    if (collision.gameObject.CompareTag("Ground"))
+    {
+        touchFloor = false;
+        animator.SetBool("Falling", true);
+        animator.SetBool("Jump", false);
+        animator.SetBool("DoubleJump", false);
+
+        // El jugador está tocando constantemente el piso.
+        // Realiza acciones aquí que necesiten actualizarse continuamente mientras está en el piso.
+    }
+}
 
      private void OnTriggerEnter2D(Collider2D collision){
         /*if(collider.tag == "Trap"){
